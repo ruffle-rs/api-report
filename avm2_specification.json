@@ -6925,31 +6925,6 @@
             }
         }
     },
-    "flash.display.FocusDirection": {
-        "classinfo": {
-            "extends": null,
-            "final": true
-        },
-        "static": {
-            "const": {
-                "TOP": {
-                    "type": "String",
-                    "value": "\"top\""
-                },
-                "BOTTOM": {
-                    "type": "String",
-                    "value": "\"bottom\""
-                },
-                "NONE": {
-                    "type": "String",
-                    "value": "\"none\""
-                }
-            }
-        },
-        "constructor": {
-            "args": []
-        }
-    },
     "flash.display.FrameLabel": {
         "classinfo": {
             "extends": "EventDispatcher",
