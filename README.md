@@ -3,7 +3,7 @@
 This is a tool used to generate a progress report from two given API states, a 'specification' and an 'implementation'.
 
 [Ruffle](https://github.com/ruffle-rs/ruffle/) uses this to create their automatic Flash AVM2 progress report,
-[as seen on their website](https://ruffle.rs/avm2.html).
+[as seen on their website](https://ruffle.rs/compatibility/avm2).
 
 ## Building from source
 
