@@ -1,13 +1,7 @@
-mod report;
-mod specification;
-
-use crate::report::Report;
-use crate::specification::Specification;
 use anyhow::Result;
 use clap::Parser;
-use std::fs::File;
-use std::io::BufReader;
-use std::path::{Path, PathBuf};
+use ruffle_api_report::{Specification, default_spec, generate_report, read_spec};
+use std::path::PathBuf;
 
 /// Creates an implementation report for ActionScript 3 (AVM2).
 #[derive(Parser, Debug)]
@@ -28,33 +22,18 @@ struct Args {
     output: Option<PathBuf>,
 }
 
-const DEFAULT_SPEC: &[u8] = include_bytes!("../avm2_specification.json");
-
-fn read_file(path: &Path) -> Result<Specification> {
-    let file = File::open(path)?;
-    let reader = BufReader::new(file);
-    Ok(serde_json::from_reader(reader)?)
-}
-
 fn main() -> Result<()> {
     let args = Args::parse();
-    let specification = match &args.specification {
-        Some(path) => read_file(path)?,
-        None => serde_json::from_slice(DEFAULT_SPEC)?,
+    let specification: Specification = match &args.specification {
+        Some(path) => read_spec(path)?,
+        None => default_spec()?,
     };
-    let implementation = read_file(&args.implementation)?;
-
-    let mut report = Report::new();
-
-    for (name, spec) in specification.iter() {
-        report.compare_class(name, spec, implementation.get(name));
-    }
+    let implementation = read_spec(&args.implementation)?;
+    let report = generate_report(&specification, &implementation);
 
     if let Some(out) = &args.output {
         report.write(out)?;
     }
-
-    // println!("Total points: {spec_total}. Implementation points: {imp_total}. Stub penalty: {stub_penalty}. Percentage: {:.2}", ((imp_total - stub_penalty) as f32) / (spec_total as f32) * 100.0);
 
     Ok(())
 }
