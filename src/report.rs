@@ -1,9 +1,9 @@
-use std::fs::File;
-use std::path::Path;
-use fnv::FnvHashMap;
-use serde::Serialize;
 use crate::specification::{Definition, TraitList};
 use anyhow::Result;
+use fnv::FnvHashMap;
+use serde::Serialize;
+use std::fs::File;
+use std::path::Path;
 
 #[derive(Serialize, Default)]
 pub struct Report {
@@ -21,7 +21,12 @@ impl Report {
         Ok(())
     }
 
-    pub fn compare_class(&mut self, class_name: &str, specification: &Definition, implementation: Option<&Definition>) {
+    pub fn compare_class(
+        &mut self,
+        class_name: &str,
+        specification: &Definition,
+        implementation: Option<&Definition>,
+    ) {
         let mut class_info = ClassInfo::default();
 
         self.summary.max_points += 1;
@@ -32,19 +37,40 @@ impl Report {
         }
 
         if let Some(traits) = &specification.instance_traits {
-            self.compare_traits(&mut class_info, traits, implementation.and_then(|imp| imp.instance_traits.as_ref()), "");
+            self.compare_traits(
+                &mut class_info,
+                traits,
+                implementation.and_then(|imp| imp.instance_traits.as_ref()),
+                "",
+            );
         }
         if let Some(traits) = &specification.static_traits {
-            self.compare_traits(&mut class_info, traits, implementation.and_then(|imp| imp.static_traits.as_ref()), "static ");
+            self.compare_traits(
+                &mut class_info,
+                traits,
+                implementation.and_then(|imp| imp.static_traits.as_ref()),
+                "static ",
+            );
         }
         if let Some(traits) = &specification.prototype {
-            self.compare_traits(&mut class_info, traits, implementation.and_then(|imp| imp.prototype.as_ref()), "prototype.");
+            self.compare_traits(
+                &mut class_info,
+                traits,
+                implementation.and_then(|imp| imp.prototype.as_ref()),
+                "prototype.",
+            );
         }
 
         self.classes.insert(class_name.to_string(), class_info);
     }
 
-    fn compare_traits(&mut self, class_info: &mut ClassInfo, specification: &TraitList, implementation: Option<&TraitList>, prefix: &str) {
+    fn compare_traits(
+        &mut self,
+        class_info: &mut ClassInfo,
+        specification: &TraitList,
+        implementation: Option<&TraitList>,
+        prefix: &str,
+    ) {
         let imp = implementation.map(|imp| imp.names()).unwrap_or_default();
 
         for (name, (_, suffix)) in specification.names() {

@@ -1,4 +1,4 @@
-use fnv::{FnvHashMap};
+use fnv::FnvHashMap;
 use serde::Deserialize;
 
 pub type Specification = FnvHashMap<String, Definition>;
@@ -65,7 +65,9 @@ pub struct ParamInfo {
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct FunctionInfo {
+    #[expect(unused)]
     pub args: Vec<ParamInfo>,
+    #[expect(unused)]
     pub returns: String,
     #[serde(default)]
     pub stubbed: bool,
