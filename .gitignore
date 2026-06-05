@@ -9,5 +9,5 @@ target/
 .idea
 
 # If ran locally
-implementation.json
-output.json
+/implementation.json
+/output.json
