@@ -1,13 +1,13 @@
-mod specification;
 mod report;
+mod specification;
 
+use crate::report::Report;
+use crate::specification::Specification;
+use anyhow::Result;
+use clap::Parser;
 use std::fs::File;
 use std::io::BufReader;
 use std::path::{Path, PathBuf};
-use clap::Parser;
-use anyhow::Result;
-use crate::report::Report;
-use crate::specification::{Specification};
 
 /// Creates an implementation report for ActionScript 3 (AVM2)
 #[derive(Parser, Debug)]
@@ -51,4 +51,3 @@ fn main() -> Result<()> {
 
     Ok(())
 }
-
