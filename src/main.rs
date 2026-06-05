@@ -9,22 +9,26 @@ use std::fs::File;
 use std::io::BufReader;
 use std::path::{Path, PathBuf};
 
-/// Creates an implementation report for ActionScript 3 (AVM2)
+/// Creates an implementation report for ActionScript 3 (AVM2).
 #[derive(Parser, Debug)]
 #[command(author, version, about)]
 struct Args {
-    /// Specification file to compare against
+    /// Specification file to compare against.
+    ///
+    /// If not specified, it uses the default bundled one.
     #[arg(short, long, value_name = "SPEC")]
-    specification: PathBuf,
+    specification: Option<PathBuf>,
 
-    /// Implementation file to report on
+    /// Implementation file to report on.
     #[arg(short, long, value_name = "IMPL")]
     implementation: PathBuf,
 
-    /// Output file to report to
+    /// Output file to report to.
     #[arg(short, long, value_name = "OUT")]
     output: Option<PathBuf>,
 }
+
+const DEFAULT_SPEC: &[u8] = include_bytes!("../avm2_specification.json");
 
 fn read_file(path: &Path) -> Result<Specification> {
     let file = File::open(path)?;
@@ -34,7 +38,10 @@ fn read_file(path: &Path) -> Result<Specification> {
 
 fn main() -> Result<()> {
     let args = Args::parse();
-    let specification = read_file(&args.specification)?;
+    let specification = match &args.specification {
+        Some(path) => read_file(path)?,
+        None => serde_json::from_slice(DEFAULT_SPEC)?,
+    };
     let implementation = read_file(&args.implementation)?;
 
     let mut report = Report::new();
